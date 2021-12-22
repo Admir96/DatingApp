@@ -1,0 +1,10 @@
+.dropdown, .dropdown-item
+{
+    cursor: pointer;
+}
+img{
+    max-height: 50px;
+    border: 2x solid #fff;
+    display:inline;
+    padding-right : 10px;
+}

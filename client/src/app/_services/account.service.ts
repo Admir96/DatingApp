@@ -1,0 +1,57 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {map} from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
+import {User} from '../_models/User';
+import { environment } from 'src/environments/environment';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AccountService {
+
+     baseUrl = environment.baseUrl;
+     private currentUserSource = new ReplaySubject<User>(1); 
+     currentUser$ = this.currentUserSource.asObservable();
+
+  constructor(private http: HttpClient) { }
+  
+  Register(model:any)
+  {
+    return this.http.post(this.baseUrl + 'account/register', model).pipe(
+     map((user: User) => {
+      if(user)
+      {
+        this.SetCurrentUser(user);
+      }
+      return user;
+    }));
+  }
+  login(model: any)
+  {
+    return this.http.post(this.baseUrl + 'account/login', model).pipe(
+      map((Response: any) =>{
+
+      const user = Response;
+        if(user)
+        {
+         this.SetCurrentUser(user);
+        }     
+      }));
+  }
+
+ SetCurrentUser(user: User)
+ {
+  localStorage.setItem('user', JSON.stringify(user));
+  this.currentUserSource.next(user);
+ }
+
+logout()
+{
+  localStorage.removeItem('user');
+  this.currentUserSource.next(null);
+}
+
+}
+
