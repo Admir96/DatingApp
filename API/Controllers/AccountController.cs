@@ -6,6 +6,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,9 +16,11 @@ namespace API.Controllers
     {
       private  DataContext _context {get; set;}
         private  ITokenService _tokenService { get; set;}
+        public IMapper _mapper { get; }
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
         {
+            _mapper = mapper;
            _context = context;
             _tokenService = tokenService;
         }
@@ -26,20 +29,23 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Register(RegisterDto RegisterDto) // sa ActionResult mozemo raditi neke http result funkcije kao npr BadRequest
         {
            if(await UserExists(RegisterDto.username)) return BadRequest("Username exists !");
+            
+            var user = _mapper.Map<AppUsers>(RegisterDto);
 
             using var hmc = new HMACSHA512();
-            var user = new AppUsers 
-            {
-             UserName = RegisterDto.username.ToLower(),
-             PasswordHash = hmc.ComputeHash(Encoding.UTF8.GetBytes(RegisterDto.password)),
-             PasswordSalt = hmc.Key
-            };
+
+            
+             user.UserName = RegisterDto.username.ToLower();
+             user.PasswordHash = hmc.ComputeHash(Encoding.UTF8.GetBytes(RegisterDto.password));
+             user.PasswordSalt = hmc.Key;
+            
             _context.Users.Add(user);
             await _context.SaveChangesAsync();  // kada se radi sa thredovima uvjek ima ova async funkcija
 
             return new UserDto{
                username = user.UserName,
-               Token = _tokenService.CreateToken(user)
+               Token = _tokenService.CreateToken(user),
+               KnownAs = user.KnownAs     
             };
         }
 
@@ -63,7 +69,8 @@ namespace API.Controllers
              return new UserDto{
                username = user.UserName,
                Token = _tokenService.CreateToken(user),
-               PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
+               PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+               KnownAs = user.KnownAs
             };
         }
 

@@ -1,0 +1,23 @@
+<div class="form-group">
+    <input
+
+    [class.is-invalid]="NgControl.touched && NgControl.invalid"
+    type={{type}}
+    class="form-control"
+    [formControl]="NgControl.control" 
+    placeholder={{label}}  
+    >
+    
+    <div *ngIf="NgControl.control.errors?.required"
+    class ="invalid-feedback">Please enter a {{label}} </div>
+
+    <div *ngIf="NgControl.control.errors?.minlength"
+    class ="invalid-feedback">must be at least {{NgControl.control.errors.minlength['requiredLength']}} </div>
+
+    <div *ngIf="NgControl.control.errors?.maxlength"
+    class ="invalid-feedback">must be at most {{NgControl.control.errors.maxlength['requiredLength']}} </div>
+
+    <div *ngIf="NgControl.control.errors?.isMatching"
+    class ="invalid-feedback">Password do not match </div>
+    
+</div>
