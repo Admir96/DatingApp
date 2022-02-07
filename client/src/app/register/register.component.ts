@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../_services/account.service';
 
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',

@@ -5,14 +5,14 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NavComponent } from './nav/nav.component'; // komponenta za navigaciju ng g c --skip-tests
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // za ukljucivanje forme
+import { NavComponent } from './nav/nav.component'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { MemberListComponent } from './member/member-list/member-list.component';
 import { MemberDetailComponent } from './member/member-detail/member-detail.component';
 import { ListsComponent } from './lists/lists.component';
-import { MessagesComponent } from './messages/messages.component'; // sa angular boostrapa za dropdown meni
+import { MessagesComponent } from './messages/messages.component'; 
 import { SharedModule } from './_modules/shared.module';
 import { MemberCardComponent } from './member/member-card/member-card.component';
 import { JtwInterceptor } from './_interceptors/jtw.interceptor';
@@ -22,6 +22,8 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 import { PhotoEditorComponent } from './member/photo-editor/photo-editor.component';
 import { InputTextComponent } from './_forms/input-text/input-text.component';
 import { DateInputComponent } from './_forms/date-input/date-input.component';
+import { MemberMessagesComponent } from './member/member-messages/member-messages.component';
+
 
 @NgModule({
   declarations: [
@@ -37,7 +39,8 @@ import { DateInputComponent } from './_forms/date-input/date-input.component';
     MemberEditComponent,
     PhotoEditorComponent,
     InputTextComponent,
-    DateInputComponent
+    DateInputComponent,
+    MemberMessagesComponent,
   ],
   imports: [
     BrowserModule,
