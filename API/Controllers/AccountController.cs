@@ -7,6 +7,7 @@ using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,14 +15,17 @@ namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-      private  DataContext _context {get; set;}
         private  ITokenService _tokenService { get; set;}
         public IMapper _mapper { get; }
+        private readonly SignInManager<AppUsers> _signInManager;
+        private readonly UserManager<AppUsers> _userManager;
 
-        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
+        public AccountController(UserManager<AppUsers> userManager, SignInManager<AppUsers> SignInManager,
+         ITokenService tokenService, IMapper mapper)
         {
+            _userManager = userManager;
+            _signInManager = SignInManager;
             _mapper = mapper;
-           _context = context;
             _tokenService = tokenService;
         }
 
@@ -32,19 +36,21 @@ namespace API.Controllers
             
             var user = _mapper.Map<AppUsers>(RegisterDto);
 
-            using var hmc = new HMACSHA512();
-
             
              user.UserName = RegisterDto.username.ToLower();
-             user.PasswordHash = hmc.ComputeHash(Encoding.UTF8.GetBytes(RegisterDto.password));
-             user.PasswordSalt = hmc.Key;
+
+            var result = await _userManager.CreateAsync(user,RegisterDto.password);
             
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();  // kada se radi sa thredovima uvjek ima ova async funkcija
+            if(!result.Succeeded) return BadRequest(result.Errors);
+            
+           var roleResult = await _userManager.AddToRoleAsync(user,"Member");
+           
+           if(!roleResult.Succeeded) return BadRequest(result.Errors);
+
 
             return new UserDto{
                username = user.UserName,
-               Token = _tokenService.CreateToken(user),
+               Token = await _tokenService.CreateToken(user),
                KnownAs = user.KnownAs,
                Gender = user.Gender     
             };
@@ -54,22 +60,21 @@ namespace API.Controllers
       [HttpPost("login")] // httpPost salje podatke 
         public async Task<ActionResult<UserDto>> Login(loginDto loginDto)
         {
-          var user = await _context.Users.Include(p => p.Photos)
-          .SingleOrDefaultAsync(x => x.UserName == loginDto.username);
+          var user = await _userManager.Users
+          .Include(p => p.Photos)
+          .SingleOrDefaultAsync(x => x.UserName == loginDto.username.ToLower());
 
           if(user == null)
           return Unauthorized("Invalid user name !");
-       
-          var hmc = new HMACSHA512(user.PasswordSalt);
-          var computerHash = hmc.ComputeHash(Encoding.UTF8.GetBytes(loginDto.password));
+          
+         var result = await _signInManager
+         .CheckPasswordSignInAsync(user,loginDto.password, false);
+ 
+          if(!result.Succeeded) return Unauthorized();
 
-          for(int i = 0;i <computerHash.Length; i++)
-        {
-            if(computerHash[i] != user.PasswordHash[i]) return Unauthorized("invalid password");      
-        }
              return new UserDto{
                username = user.UserName,
-               Token = _tokenService.CreateToken(user),
+               Token = await _tokenService.CreateToken(user),
                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
                KnownAs = user.KnownAs,
                Gender = user.Gender
@@ -78,7 +83,7 @@ namespace API.Controllers
 
         private async Task<bool> UserExists (string username)
        {
-          return await _context.Users.AnyAsync(x => x.UserName == username.ToLower()); //provjera postoji li vec to ime u bazi sa lambda funckijom
+          return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower()); 
        }    
        
     }
