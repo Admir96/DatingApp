@@ -60,12 +60,12 @@ namespace API.Controllers
             return Ok(await _userManager.GetRolesAsync(user));
         }
     
-        [Authorize(Policy = "ModeratePhotoRole")]
+       /* [Authorize(Policy = "ModeratePhotoRole")]
         [HttpGet ("photos-to-moderate")]
 
         public  async Task<ActionResult> GetPhotosToModerate()
         {
             return Ok("Only admins or moderators can see this");
-        }
+        }*/
     }
 }

@@ -45,7 +45,7 @@
 
               <tab heading = 'Interests' (selectTab) = "onTabActivated($event)">
                 <h4>Interests</h4>
-                <p>{{member.Interests}</p>
+                <p>{{member.interests}}</p>
               </tab>
 
               <tab heading = 'Photos' (selectTab) = "onTabActivated($event)">
@@ -54,8 +54,8 @@
               </tab>
 
               <tab heading = 'Messages' (selectTab) = "onTabActivated($event)">
-               <app-member-messages [messages] ="messages" [username]="member.username"></app-member-messages>
-
+               <app-member-messages [messages]="messages" [username]="member.username"></app-member-messages>
+             
               </tab>
 
           </tabset>
