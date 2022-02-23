@@ -38,11 +38,6 @@ namespace API.Data
            return await _Context.Users.Include(p => p.Photos).SingleOrDefaultAsync(x => x.UserName == username);
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-           return await _Context.SaveChangesAsync() > 0;
-        }
-
         public void Update(AppUsers user)
         {
            _Context.Entry(user).State = EntityState.Modified;
