@@ -1,16 +1,16 @@
 <div class="row">
     <table class="table">
         <tr>
-            <th style="width: 30%;"> Username</th>
-            <th style="width: 40%;">Active roles</th>
-            <th style="width: 30%;">Edit Roles</th>
+            <th style="width: 30%; height: 50px;">Username</th>
+            <th style="width: 40%; height: 50px;">Active roles</th>
+            <th style="width: 30%; height: 50px;">Edit Roles</th>
 
         </tr>
 
         <tr *ngFor="let user of users">
-            <td>{{user.username}}</td>
-            <td>{{user.roles}}</td>
-            <td><button (click)="openRolesModal(user)" class="btn btn-info">Edit Roles</button></td>
+            <td style="margin-bottom:5px" >{{user.username}}</td>
+            <td style="margin-bottom:5px" >{{user.roles}}</td>
+            <button style="margin-bottom:5px" (click)="openRolesModal(user)" class="btn btn-info">Edit Roles</button>
 
         </tr>
 

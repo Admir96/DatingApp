@@ -1,9 +1,7 @@
   <div class="text-center mt-3">
 
-<h2>{{predicate === 'liked' ? 'Members I like' : 'Members who like me'}}</h2>
-
 </div>
-<div class="container mt-3">
+<div class="container">
     <div class="row">
         <div class="btn-group" name ="predicate">
             <button class="btn btn-primary" btnRadio="liked"
@@ -18,7 +16,7 @@
         </div>
     </div>
 
-    <div class ="d-flex justify-content-center" *ngIf="pagination">
+    <div class ="d-flex justify-content-center" style="margin-right: 200px;" *ngIf="pagination">
         <pagination 
         [boundaryLinks] ="true"
         [totalItems] = "pagination.totalItems"
