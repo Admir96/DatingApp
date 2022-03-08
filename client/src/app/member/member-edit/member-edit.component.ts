@@ -44,5 +44,9 @@ user:User;
      })
 
   }
+  select()
+  {
+    
+  }
 
 }

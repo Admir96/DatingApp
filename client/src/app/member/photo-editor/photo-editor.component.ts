@@ -5,6 +5,7 @@ import { Member } from 'src/app/_models/member';
 import { Photo } from 'src/app/_models/photo';
 import { User } from 'src/app/_models/User';
 import { AccountService } from 'src/app/_services/account.service';
+import { ConfirmService } from 'src/app/_services/confirm.service';
 import { MembersService } from 'src/app/_services/members.service';
 import { environment } from 'src/environments/environment';
 
@@ -21,7 +22,8 @@ hasBaseDropZoneOver = false;
 baseUrl = environment.baseUrl;
 user: User;
 
-  constructor(private accountService: AccountService, private memberService:MembersService) {
+  constructor(private accountService: AccountService, private memberService:MembersService,
+    private confirmService: ConfirmService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
    }
 
@@ -34,24 +36,34 @@ user: User;
   }
   setMainPhoto(photo : Photo)
   {
-    this.memberService.setMainPhoto(photo.id).subscribe(() => {
-      this.user.photoUrl = photo.url;
-      this.accountService.SetCurrentUser(this.user);
-      this.member.photoUrl = photo.url;
-      this.member.photos.forEach(p => {
-
-        if(p.isMain) p.isMain = false;
-        if(p.id === photo.id) p.isMain = true;
-
-      })
+    this.confirmService.confirm().subscribe(result =>{
+      if(result)
+      {
+        this.memberService.setMainPhoto(photo.id).subscribe(() => {
+          this.user.photoUrl = photo.url;
+          this.accountService.SetCurrentUser(this.user);
+          this.member.photoUrl = photo.url;
+          this.member.photos.forEach(p => {
+    
+            if(p.isMain) p.isMain = false;
+            if(p.id === photo.id) p.isMain = true;
+    
+          })
+        })
+      }
     })
   }
 
   deletePhoto(photoId: number)
   {
+    this.confirmService.confirm().subscribe(result =>{
+      if(result)
+      {
     this.memberService.deletePhoto(photoId).subscribe(() =>{
      this.member.photos = this.member.photos.filter(x => x.id !== photoId);
     })
+  }
+  })
   }
 
 initializeUploader()
