@@ -16,9 +16,12 @@ export class MessagesComponent implements OnInit {
   pageNumber = 1;
   pageSize  = 3;
   loading = false;
+  
 
   constructor(private messageService: MessageService, 
-    private confirmService:ConfirmService) { }
+    private confirmService:ConfirmService) { 
+     
+    }
 
   ngOnInit(): void {
     this.loadMessages();
@@ -44,6 +47,7 @@ export class MessagesComponent implements OnInit {
       {
         this.messageService.deleteMessage(id).subscribe(() => {
           this.messages.splice(this.messages.findIndex(m => m.id === id), 1);
+         
         })
       }
     })

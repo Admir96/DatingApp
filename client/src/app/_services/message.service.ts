@@ -19,6 +19,7 @@ private hubConnection: HubConnection;
 private messageThreadSource = new BehaviorSubject<Message[]>([]);
 messageThread$ = this.messageThreadSource.asObservable();
 
+
   constructor(private http: HttpClient) { }
 
   createHubConnection(user: User, otherUsername: string){
@@ -35,6 +36,7 @@ messageThread$ = this.messageThreadSource.asObservable();
 
     this.hubConnection.on('ReceiveMessageThread', messages =>{
       this.messageThreadSource.next(messages);
+   
     })
 
     this.hubConnection.on('NewMessage', message => {

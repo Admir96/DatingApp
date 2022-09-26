@@ -3,11 +3,12 @@
 </div>
 <div class="container">
     <div class="row">
-        <div class="btn-group" name ="predicate">
+        <div class="btn-group" name ="predicate">                   
             <button class="btn btn-primary" btnRadio="liked"
             [(ngModel)] = "predicate" (click)="loadLikes()">Members I like</button>
             <button class="btn btn-primary" btnRadio="likedBy"
             [(ngModel)] ="predicate" (click)="loadLikes()">Members who Like me </button>
+
         </div>
     </div>
     <div class="row mt-3">
@@ -16,7 +17,7 @@
         </div>
     </div>
 
-    <div class ="d-flex justify-content-center" style="margin-right: 200px;" *ngIf="pagination">
+    <div class ="d-flex justify-content-center" style="margin-right: 200px;" *ngIf="pagination &&  pagination.totalItems > 0">
         <pagination 
         [boundaryLinks] ="true"
         [totalItems] = "pagination.totalItems"
@@ -26,9 +27,12 @@
         previousText ="&lsaquo;"
         nextText ="&rsaquo;"
         firstText ="&laquo;"
-        lastText = "&raquo;">
-    
-    
+        lastText = "&raquo;">  
         </pagination>
     </div>
+
+    <div class="row" *ngIf="members?.length === 0">
+        <h3>No Members</h3>
+    </div>
+
 </div>

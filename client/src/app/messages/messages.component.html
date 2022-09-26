@@ -22,7 +22,7 @@
 </div>
 
 <div class="row" *ngIf="messages?.length > 0">
-    <table class="table table-hover" style="cursor: pointer;">
+    <table class="table table-hover" style="cursor: pointer; margin-left: 10px;">
         <tr>
             <th style="width: 40%;"> Message </th>
             <th style="width: 20%;"> From / To </th>
@@ -61,7 +61,7 @@
     </table>
 </div>
 
-<div class ="d-flex justify-content-center" *ngIf="pagination">
+<div class ="d-flex justify-content-center" *ngIf="pagination && pagination.totalItems > 0">
     <pagination 
     [boundaryLinks] ="true"
     [totalItems] = "pagination.totalItems"
@@ -72,7 +72,5 @@
     nextText ="&rsaquo;"
     firstText ="&laquo;"
     lastText = "&raquo;">
-
-
     </pagination>
 </div>
